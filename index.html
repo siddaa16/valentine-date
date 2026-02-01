@@ -1,57 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siddaa 💖 Valentine</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffb6c1, #ffd6e0);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .card {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    min-height: 360px;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    position: relative;
+  }
+
+  h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 28px;
+    color: #ff4d6d;
+    line-height: 1.3;
+  }
+
+  .forever {
+    color: #ff2f5b;
+    text-shadow: 0 0 8px #ff9eb3, 0 0 20px #ff4d6d;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 6px #ff9eb3; }
+    to { text-shadow: 0 0 25px #ff2f5b; }
+  }
+
+  .emoji {
+    font-size: 46px;
+    margin: 15px 0;
+  }
+
+  /* BUTTON AREA – STABLE FIRST */
+  .buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    position: relative;
+    height: 120px;
+  }
+
+  button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  #yes {
+    background: #ff4d6d;
+    color: white;
+    z-index: 3;
+  }
+
+  #no {
+    background: #ccc;
+    color: #333;
+    position: absolute;
+    left: 50%;
+    transform: translateX(60px); /* aligned beside YES */
+    z-index: 4;
+  }
+
+  #tease {
+    margin-top: 12px;
+    font-style: italic;
+    color: #ff6f91;
+    opacity: 0;
+    transition: opacity 0.2s;
+    min-height: 22px;
+  }
+
+  .option {
+    margin: 10px;
+    background: #ffe0e6;
+    color: #ff4d6d;
+    font-weight: 500;
+  }
+
+  input {
+    width: 90%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+    font-size: 16px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="app">
+
+  <h1>
+    Will you be Siddaa’s Valentine
+    <span class="forever">forever</span>? 💖
+  </h1>
+
+  <div class="emoji">🧸</div>
+
+  <div class="buttons" id="buttonArea">
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+
+  <p id="tease"></p>
+
+</div>
+
 <script>
   const app = document.getElementById("app");
-  const yesBtn = document.getElementById("yes");
   const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
   const tease = document.getElementById("tease");
+  const area = document.getElementById("buttonArea");
 
-  const teaseMessages = [
+  let escapeActivated = false;
+
+  const messages = [
     "Nice try 😏",
-    "Haha… almost 😜",
-    "Not today 😌",
-    "You’re cute when you try 🤭",
-    "Oops! Missed me 💃",
-    "I’m faster than your finger 😎"
+    "Almost 😜",
+    "Not happening 😌",
+    "You’re persistent 🤭",
+    "Missed me 💃",
+    "Too slow 😎"
   ];
 
   function moveNo() {
-    const padding = 20;
-    const maxX = app.clientWidth - noBtn.offsetWidth - padding;
-    const maxY = app.clientHeight - noBtn.offsetHeight - 140;
+    const areaRect = area.getBoundingClientRect();
+    const yesRect = yesBtn.getBoundingClientRect();
 
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
+    let x, y, safe = false;
+
+    while (!safe) {
+      x = Math.random() * (areaRect.width - noBtn.offsetWidth);
+      y = Math.random() * (areaRect.height - noBtn.offsetHeight);
+
+      const noRect = {
+        left: areaRect.left + x,
+        right: areaRect.left + x + noBtn.offsetWidth,
+        top: areaRect.top + y,
+        bottom: areaRect.top + y + noBtn.offsetHeight
+      };
+
+      safe =
+        noRect.right < yesRect.left ||
+        noRect.left > yesRect.right ||
+        noRect.bottom < yesRect.top ||
+        noRect.top > yesRect.bottom;
+    }
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 
-    // 📳 VIBRATION (mobile)
-    if (navigator.vibrate) {
-      navigator.vibrate(50);
-    }
+    if (navigator.vibrate) navigator.vibrate(40);
 
-    // 😜 TEASING TEXT
-    const msg = teaseMessages[Math.floor(Math.random() * teaseMessages.length)];
-    tease.innerText = msg;
+    tease.innerText = messages[Math.floor(Math.random() * messages.length)];
     tease.style.opacity = 1;
 
-    setTimeout(() => {
-      tease.style.opacity = 0;
-    }, 900);
+    clearTimeout(tease.timer);
+    tease.timer = setTimeout(() => tease.style.opacity = 0, 900);
   }
 
-  // 🔁 ALWAYS ESCAPE
-  ["mouseenter", "touchstart", "click"].forEach(event => {
-    noBtn.addEventListener(event, (e) => {
+  // FIRST CLICK activates escape mode
+  noBtn.addEventListener("click", (e) => {
+    if (!escapeActivated) {
+      escapeActivated = true;
       e.preventDefault();
-      e.stopPropagation();
+      moveNo();
+      return;
+    }
+    e.preventDefault();
+    moveNo();
+  });
+
+  // After activation → hover & touch also escape
+  ["mouseenter", "touchstart"].forEach(evt => {
+    noBtn.addEventListener(evt, (e) => {
+      if (!escapeActivated) return;
+      e.preventDefault();
       moveNo();
     });
   });
 
   // YES FLOW
-  yesBtn.addEventListener("click", showChoice);
-
-  function showChoice() {
+  yesBtn.addEventListener("click", () => {
     app.innerHTML = `
       <h1>Date Time ☕🎬</h1>
       <div class="emoji">💑</div>
@@ -59,13 +219,13 @@
       <button class="option" onclick="showCafe()">☕ Café Date</button>
       <button class="option" onclick="showMovie()">🎬 Movie Date</button>
     `;
-  }
+  });
 
   function showCafe() {
     app.innerHTML = `
       <h1>Café Date ☕</h1>
       <div class="emoji">🧁☕</div>
-      <p>Which café do you want to go to with me?</p>
+      <p>Which café do you want to go to?</p>
       <input id="cafeName" placeholder="Type café name..." />
       <br><br>
       <button class="option" onclick="confirmCafe()">Confirm 💖</button>
@@ -77,10 +237,7 @@
     app.innerHTML = `
       <h1>Perfect Choice 💕</h1>
       <div class="emoji">☕🧸</div>
-      <p>
-        Café date it is! 🥰<br><br>
-        Let’s meet at <b>${cafe}</b> and make sweet memories ✨
-      </p>
+      <p>Let’s meet at <b>${cafe}</b> and make memories ✨</p>
     `;
   }
 
@@ -88,7 +245,7 @@
     app.innerHTML = `
       <h1>Movie Date 🎬</h1>
       <div class="emoji">🍿🎥</div>
-      <p>Which movie should we watch together?</p>
+      <p>Which movie should we watch?</p>
       <input id="movieName" placeholder="Type movie name..." />
       <br><br>
       <button class="option" onclick="confirmMovie()">Book Tickets 🎟️</button>
@@ -100,10 +257,10 @@
     app.innerHTML = `
       <h1>Movie Night 💖</h1>
       <div class="emoji">🎬🍿</div>
-      <p>
-        Tickets booked for <b>${movie}</b> 🎟️<br><br>
-        Can’t wait to watch it with you ❤️
-      </p>
+      <p>Tickets booked for <b>${movie}</b> 😍</p>
     `;
   }
 </script>
+
+</body>
+</html>
