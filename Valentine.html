@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Siddaa 💖 Valentine</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffb6c1, #ffd6e0);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .card {
+    background: white;
+    width: 400px;
+    min-height: 320px;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    animation: fadeIn 0.6s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 30px;
+    color: #ff4d6d;
+    line-height: 1.3;
+  }
+
+  p {
+    font-style: italic;
+    color: #555;
+    font-size: 16px;
+  }
+
+  .emoji {
+    font-size: 50px;
+    margin: 15px 0;
+    animation: bounce 1.5s infinite;
+  }
+
+  @keyframes bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* FOREVER GLOW MAGIC */
+  .forever {
+    color: #ff2f5b;
+    text-shadow:
+      0 0 8px #ff9eb3,
+      0 0 16px #ff6f91,
+      0 0 30px #ff2f5b;
+    animation: foreverGlow 2s ease-in-out infinite alternate,
+               foreverFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes foreverGlow {
+    from {
+      text-shadow:
+        0 0 6px #ffc1cc,
+        0 0 14px #ff9eb3,
+        0 0 22px #ff4d6d;
+    }
+    to {
+      text-shadow:
+        0 0 12px #ffe0e6,
+        0 0 25px #ff6f91,
+        0 0 40px #ff2f5b;
+    }
+  }
+
+  @keyframes foreverFloat {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-3px) scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  .buttons {
+    margin-top: 25px;
+    position: relative;
+    height: 90px;
+  }
+
+  button {
+    padding: 12px 26px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .yes {
+    background: #ff4d6d;
+    color: white;
+  }
+
+  .option {
+    background: #ffe0e6;
+    color: #ff4d6d;
+    font-weight: 500;
+    margin: 10px;
+  }
+
+  #yes {
+    position: absolute;
+    left: 70px;
+  }
+
+  #no {
+    position: absolute;
+    left: 200px;
+    background: #ccc;
+    color: #333;
+  }
+
+  input {
+    width: 90%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+    font-size: 16px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="app">
+  <!-- FIRST PAGE -->
+  <h1>
+    Will you be Siddaa’s Valentine
+    <span class="forever">forever</span>? 💖
+  </h1>
+
+  <div class="emoji">🧸</div>
+
+  <div class="buttons">
+    <button id="yes" class="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+<script>
+  const app = document.getElementById("app");
+  const yesBtn = document.getElementById("yes");
+  const noBtn = document.getElementById("no");
+
+  // NO button escape
+  noBtn.addEventListener("mouseenter", () => {
+    noBtn.style.left = Math.random() * 220 + "px";
+    noBtn.style.top = Math.random() * 50 + "px";
+  });
+
+  // YES FLOW
+  yesBtn.addEventListener("click", showChoice);
+
+  function showChoice() {
+    app.innerHTML = `
+      <h1>Date Time ☕🎬</h1>
+      <div class="emoji">💑</div>
+      <p>Will it be a Café Date or a Movie Date?</p>
+      <button class="option" onclick="showCafe()">☕ Café Date</button>
+      <button class="option" onclick="showMovie()">🎬 Movie Date</button>
+    `;
+  }
+
+  function showCafe() {
+    app.innerHTML = `
+      <h1>Café Date ☕</h1>
+      <div class="emoji">🧁☕</div>
+      <p>Which café do you want to go to with me?</p>
+      <input id="cafeName" placeholder="Type café name..." />
+      <br><br>
+      <button class="option" onclick="confirmCafe()">Confirm 💖</button>
+    `;
+  }
+
+  function confirmCafe() {
+    const cafe = document.getElementById("cafeName").value || "our favourite café";
+    app.innerHTML = `
+      <h1>Perfect Choice 💕</h1>
+      <div class="emoji">☕🧸</div>
+      <p>
+        Café date it is! 🥰<br><br>
+        Let’s meet at <b>${cafe}</b> and make sweet memories ✨
+      </p>
+    `;
+  }
+
+  function showMovie() {
+    app.innerHTML = `
+      <h1>Movie Date 🎬</h1>
+      <div class="emoji">🍿🎥</div>
+      <p>Which movie should we watch together?</p>
+      <input id="movieName" placeholder="Type movie name..." />
+      <br><br>
+      <button class="option" onclick="confirmMovie()">Book Tickets 🎟️</button>
+    `;
+  }
+
+  function confirmMovie() {
+    const movie = document.getElementById("movieName").value || "a romantic movie";
+    app.innerHTML = `
+      <h1>Movie Night 💖</h1>
+      <div class="emoji">🎬🍿</div>
+      <p>
+        Tickets booked for <b>${movie}</b> 🎟️<br><br>
+        Can’t wait to watch it with you ❤️
+      </p>
+    `;
+  }
+</script>
+
+</body>
+</html>
